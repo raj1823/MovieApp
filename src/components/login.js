@@ -4,6 +4,7 @@ import {
   TextInput,
   TouchableOpacity,
   ImageBackground,
+  SafeAreaView,
   View,
   StyleSheet,
   Image,
@@ -20,7 +21,10 @@ class Login extends React.Component {
     super(props);
     this.state = {
       username:"",
-      password:""
+      password:"",
+      usernameImage:require('../../assets/username.png'),
+      passwordImage:require('../../assets/password.png'),
+      logoPath:require('../../assets/logo.png')
     };
    
     
@@ -44,17 +48,50 @@ class Login extends React.Component {
       <View style={style.container}>
         
           <View style={style.parentView}>
-            <View style={style.topSection}>
-              <View style={style.divider} />
-              <View style={style.divider}>
+          
+            <View style={style.midSection}>
+
+              <View style={{flex:2,justifyContent:"flex-end",alignItems:"center"}}>
+                <Image source={this.state.logoPath} 
+                        style={{height:140,width:100,marginBottom:22}}></Image>
+
+              </View>
+
+              <View style={{ marginVertical:20,flex:1}}>
+
+              <View style={style.SignUpLogin}>
+
+
+                <View style={{...style.container,alignItems:"flex-end",}}>
+                    <Text style={style.loginText}> Login</Text>
+                </View>
+
+
+                <View style={{...style.container}}>
+                  <Text style={style.signUpText}> Sign Up</Text>
+                  </View>
+
+
+              </View>
+              <Text style={style.loginInfo}>Please login to access your account</Text>
+
                
               </View>
+
+
+
+              
             </View>
-            <View style={style.midSection}>
-              <View style={style.divider}>
+
+
+
+            <View style={style.bottomSection}>
+            <View style={style.divider}>
+            <Image source={this.state.usernameImage} style={style.image}/>
                 <TextInput
                   style={style.inputDetails}
-                  placeholder={'Enter User Id'}
+                  placeholder={'User Name'}
+                  placeholderTextColor="#919294"
                   autoCapitalize={false}
                   blurOnSubmit={true}
                   defaultValue={this.state.username}
@@ -64,9 +101,12 @@ class Login extends React.Component {
                 />
               </View>
               <View style={{...style.divider}}>
+                <Image source={this.state.passwordImage} style={style.image}/>
                 <TextInput
                   style={style.inputDetails}
                   placeholder={'Password'}
+                  placeholderTextColor="#919294"
+                  
                   secureTextEntry={true}
                   autoCapitalize={false}
                   onChangeText={text => {
@@ -74,30 +114,20 @@ class Login extends React.Component {
                   }}
                 />
               </View>
-            </View>
-            <View style={style.bottomSection}>
+
+
               <TouchableOpacity onPress={()=>{
                 this.props.navigation.navigate("MyDrawer")
               }}>
                 <View style={style.loginButton}>
-                  <Text style={style.loginText}>LOGIN</Text>
+                  <Text style={style.loginText2}>Login</Text>
                 </View>
               </TouchableOpacity>
               <TouchableOpacity>
                 <Text style={style.forgotPassword}>Forgot Password?</Text>
               </TouchableOpacity>
 
-              <View style={{...style.newUserSignUp}}>
-                <View style={{flex: 1.15}}>
-                  <Text style={style.newUserText}>New User?</Text>
-                </View>
-
-                <View style={style.divider}>
-                  <TouchableOpacity>
-                    <Text style={style.signUpText}> Signup</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
+             
             </View>
           </View>
        
@@ -107,24 +137,41 @@ class Login extends React.Component {
 }
 const style = StyleSheet.create({
   image: {
-    flex: 1,
+    
     resizeMode: 'contain',
-    justifyContent: 'center',
+    alignSelf:"center",
+    height:28,
+    width:28,
+    flex:1,
+    margin:6
+  },
+  loginInfo:{
+    fontSize:20,
+    color:"#919294",
+    alignSelf:"center",
+    marginVertical:15
+
   },
   container: {
     flex: 1,
-    flexDirection: 'column',
+    
+    
   },
-  newUserText: {
-    fontSize: 15,
-    color: '#a19d9a',
-    alignSelf: 'flex-end',
-    fontWeight: '600',
+  SignUpLogin: {
+   flexDirection:"row",
+  
+
+  },
+  loginText2:{
+    color:"white",
+    alignSelf:"center",
+    fontSize:26,
+    paddingVertical:12
   },
   forgotPassword: {
     alignSelf: 'center',
-    fontSize: 15,
-    color: '#a19d9a',
+    fontSize: 20,
+    color: '#919294',
     marginTop: 12,
     marginBottom: 20,
     fontWeight: '600',
@@ -133,25 +180,32 @@ const style = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
-  divider: {flex: 1},
+  divider: { flexDirection:"row"},
 
   inputDetails: {
-    paddingVertical: 24,
-    fontSize: 15,
-    borderBottomColor: '#b5b3b1',
-    borderBottomWidth: 1,
-    marginLeft: 15,
-    marginRight: 20,
-    fontWeight: '600',
-    color: '#a19d9a',
+    backgroundColor:"#181f29",
+    paddingVertical: 18,
+    paddingLeft:10,
+    fontSize: 20,
+    flex:7,
+    
+    marginRight: 15,
+  
+    fontWeight: '400',
+    marginVertical:20,
+    color:"#919294"
+    
+    
   },
   signUpText: {
-    fontSize: 15,
-    color: '#e06e26',
-    fontWeight: '600',
+  
+    color: '#fff',
+    fontSize: 26,
+    paddingVertical: 11,
+    marginLeft:22,
   },
   midSection: {
-    flex: 1,
+    flex: 0.9, backgroundColor:"#181f29"
   },
   newUserSignUp: {
     marginVertical: 10,
@@ -161,35 +215,38 @@ const style = StyleSheet.create({
     marginHorizontal: 15,
   },
   parentView: {
-    margin: 20,
+   
     flex: 1,
-    marginVertical: 10,
+   
   },
   bottomSection: {
-    flex: 2,
+    flex: 1,
+    backgroundColor:"#181f29"
   },
   loginText: {
-    color: '#fff',
-    fontSize: 16,
-    paddingVertical: 17,
+    
+
+
+    marginRight:22,
+    color: '#e4264e',
+    fontWeight:"800",
+    fontSize: 30,
+    
+    paddingVertical: 11,
+    
+
   },
 
   loginButton: {
-    borderRadius: 4,
-    backgroundColor: '#e06e26',
+    borderRadius: 7,
+    backgroundColor: '#e4264e',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 8,
-    marginBottom: 10,
-    marginLeft: 13,
-    marginRight: 15,
+    marginVertical:15,
+    marginHorizontal:15
+
   },
-  logoStyling: {
-    height: 35,
-    resizeMode: 'contain',
-    width: '35%',
-    marginLeft: 15,
-  },
+  
 });
 
 const mapStateToProps = state => ({

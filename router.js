@@ -3,7 +3,7 @@ import {createStackNavigator} from '@react-navigation/stack'
 import {createDrawerNavigator} from '@react-navigation/drawer'
 import Login from './src/components/login';
 
-import Home from './src/components/home';
+
 import Home2 from './src/DrawerScreens/home2'
 import Settings from './src/DrawerScreens/settings'
 import Sports from './src/DrawerScreens/sports'
@@ -40,12 +40,12 @@ function myApp(){
     
 return(
 
-<NavigationContainer>
+<NavigationContainer>                            
 
 
     
     <Stack.Navigator>
-    <Stack.Screen  name="Login" component={Login}/>
+    <Stack.Screen  options={{headerShown:false}} name="Login" component={Login}/>
     <Stack.Screen  options={{headerShown:false}} name="MyDrawer" component ={myDrawer} />
    
     </Stack.Navigator>
