@@ -1,4 +1,4 @@
-import {FETCH_DATA_SUCCESS,FETCH_DATA_FAILURE, FETCH_LIVE_DATA_SUCCESS} from '../Data/constant'
+import {FETCH_DATA_SUCCESS,FETCH_DATA_FAILURE, FETCH_LIVE_DATA_SUCCESS,FETCH_CATEGORY_DATA} from '../Data/constant'
 
 
 
@@ -30,6 +30,16 @@ export function isLiveDataSuccess(liveData)
         type: FETCH_LIVE_DATA_SUCCESS,
         
        data: liveData
+
+    }
+}
+export function isCategoryDataSuccess(Data)
+{
+
+    return {
+        type: FETCH_CATEGORY_DATA,
+        
+       data: Data
 
     }
 }

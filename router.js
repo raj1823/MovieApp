@@ -24,13 +24,13 @@ function myDrawer()
     <Drawer.Navigator>
         <Drawer.Screen name="Home" component={Home2}/>
 
-        <Drawer.Screen name="liveTv" component={LiveTv}/>
+        <Drawer.Screen name="LiveTv" component={LiveTv}/>
         
-        <Drawer.Screen name="movies" component={Movies}/>
+        <Drawer.Screen name="Movies" component={Movies}/>
 
-        <Drawer.Screen name="tvShows" component={TvShows}/>
-        <Drawer.Screen name="sports" component={Sports}/>
-        <Drawer.Screen name="kids" component={Kids}/>
+        <Drawer.Screen name="Tv Shows" component={TvShows}/>
+        <Drawer.Screen name="Sports" component={Sports}/>
+        <Drawer.Screen name="Kids" component={Kids}/>
         <Drawer.Screen name="Settings" component={Settings}/>
     </Drawer.Navigator>
 )
