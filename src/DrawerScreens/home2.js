@@ -291,7 +291,7 @@ class Home2 extends React.Component {
           data={this.props.categoryData}
           renderItem={({item}) => {
             return (
-              <View style={{marginHorizontal:20}}>
+              <View style={{marginHorizontal:10}}>
               <TouchableOpacity>
                 <Image
                   source={{
@@ -355,12 +355,12 @@ const style = StyleSheet.create({
    
   },
   imageStart5:{
-    height: 140,
-    width: 200,
+    height: 120,
+    width: 150,
     resizeMode:"stretch",
     
     
-    marginHorizontal:15,
+    marginHorizontal:5,
     
    
   },
