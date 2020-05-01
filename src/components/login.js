@@ -10,9 +10,10 @@ import {
   Image,
 } from 'react-native';
 import {connect} from 'react-redux';
+const Realm = require('realm');
 
 
-
+import {isUserAuthenticated} from '../../Services/Authentication/action'
 import ActivityWaiter from '../../activityWaiter';
 
 
@@ -22,9 +23,11 @@ class Login extends React.Component {
     this.state = {
       username:"",
       password:"",
+      realm: null,
       usernameImage:require('../../assets/username.png'),
       passwordImage:require('../../assets/password.png'),
-      logoPath:require('../../assets/logo.png')
+      logoPath:require('../../assets/logo.png'),
+
     };
    
     
@@ -33,13 +36,46 @@ class Login extends React.Component {
   componentDidUpdate() {
    
   }
-  componentDidMount(){
+  saveData() {
+    const {realm} = this.state;
+    realm.write(() => {
+      realm.create('UserData', {username: 'Admin', password: 'Admin'});
+    });
+  }
 
+  deleteData() {
+    const {realm} = this.state;
+    realm.write(() => {
+      let user = realm.objects('UserData');
+      realm.delete(user);
+    });
+  }
+
+  componentDidMount(){
+    Realm.open({
+      schema: [
+        {
+          name: 'credentialsData',
+          properties: {username: 'string', password: 'string'},
+        },
+      ],
+    }).then(realm => {
+      this.setState({realm});
+      this.deleteData();
+      this.saveData();
+    });
+
+  }
+  componentWillUnmount() {
+    const {realm} = this.state;
+    if (realm !== null && !realm.isClosed) {
+      realm.close();
+    }
   }
 
   
   render() {
-    const {isLoading} = this.state;
+    const {isLoading,realm} = this.state;
     console.log('Global States', this.props);
 
     return isLoading ? (
@@ -117,7 +153,12 @@ class Login extends React.Component {
 
 
               <TouchableOpacity onPress={()=>{
-                this.props.navigation.navigate("MyDrawer")
+                // this.props.navigation.navigate("MyDrawer")
+                this.props.authenticateUser(
+                  realm.objects('UserData'),
+                  username,
+                  password,
+                );
               }}>
                 <View style={style.loginButton}>
                   <Text style={style.loginText2}>Login</Text>
@@ -254,6 +295,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
+  authenticateUser: isUserAuthenticated,
 
  
 };

@@ -1,4 +1,4 @@
-import {FETCH_DATA_SUCCESS,FETCH_DATA_FAILURE} from '../Data/constant'
+import {FETCH_DATA_SUCCESS,FETCH_DATA_FAILURE,FETCH_LIVE_DATA_SUCCESS} from '../Data/constant'
 
 
 const initialState={
@@ -6,6 +6,7 @@ const initialState={
     isSuccess: false,
     storedData : [],
     error: null,
+    liveData:[]
    
 
     
@@ -30,6 +31,13 @@ const data_Reducer=(state=initialState,action={})=>{
             ...state,
              isSuccess:false
             }
+
+
+            case FETCH_LIVE_DATA_SUCCESS: 
+            return {
+                ...state,
+                 liveData:action.data
+                }
        
         default:  return state
     }

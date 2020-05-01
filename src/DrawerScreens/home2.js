@@ -14,8 +14,10 @@ import {connect} from 'react-redux';
 
 import ActivityWaiter from '../../activityWaiter';
 
-import {dataFetch} from '../../Services/Data/fetchData';
+import {dataFetch,fetchLiveChannels} from '../../Services/Data/fetchData';
 import data_Reducer from '../../Services/Data/reducer';
+import { ScrollView } from 'react-native-gesture-handler';
+
 
 class Home2 extends React.Component {
   constructor(props) {
@@ -23,7 +25,8 @@ class Home2 extends React.Component {
     this.state = {
      drawerImage:require('../../assets/drawer.png'),
      searchIcon:require('../../assets/search.png'),
-     notificationIcon:require('../../assets/notification.png')
+     notificationIcon:require('../../assets/notification.png'),
+     ratings:require('../../assets/ratings.png')
     };
   }
 
@@ -31,46 +34,60 @@ class Home2 extends React.Component {
   componentDidMount() {
     console.log('Inside mount');
     this.props.fetchMovieData();
+    this.props.fetchLiveData();
   }
 
   render() {
-    console.log(
-      'inside render: ',
-      'https://image.tmdb.org/t/p/w500' + this.props.moviesData[0].poster_path,
-    );
+    // console.log(
+    //   'inside render: ',
+    //   'https://image.tmdb.org/t/p/w500' + this.props.moviesData[0].poster_path,
+    // );
+    console.log("live Data:",this.props.liveData)
     return (
       <SafeAreaView style={{backgroundColor:"#181f29",flex:1}}>
+       
 
-        <View style={{flexDirection:"row"}}>
+        <View style={{flexDirection:"row",}}>
           <View style={{flex:1,backgroundColor:"black",flexDirection:"row"}}>
+
+            <TouchableOpacity onPress={()=>{
+              this.props.navigation.openDrawer()
+            }}>
+
             <Image source={this.state.drawerImage}
                       style={{height:40,width:40,margin:15}}/>
+            </TouchableOpacity>
+           
               < Text style={{alignSelf:"center",fontSize:22,color:"white",fontWeight:"800"}}> APP LOGO</Text>
           </View>
 
 
-          <View style={{flex:1,backgroundColor:"orange",flexDirection:"row",alignItems:"flex-end"}}>
-            <Image source={this.state.searchIcon}
-             style={{height:40,
-             width:40,
-             resizeMode:"contain",
-             margin:15}}/>
+          <View style={{flex:1,backgroundColor:"black",flexDirection:"row",justifyContent:"flex-end"}}>
 
-            <Image source={this.state.notificationIcon} 
+          <Image source={this.state.notificationIcon} 
             style={{
-              height:40,
-              width:40,
-              resizeMode:"contain",
-              margin:15}}/>
+              height:30,
+              width:30,
+              resizeMode:"contain",alignSelf:"center",
+              margin:13}}/>
+            <Image source={this.state.searchIcon}
+             style={{height:30,
+             width:30,alignSelf:"center",
+             resizeMode:"contain",
+             margin:13}}/>
+
+           
 
 
             </View>
 
         </View>
+         <ScrollView>
         <View>
         <FlatList
           style={{marginBottom: 10, backgroundColor: '#181f29'}}
           horizontal={true}
+
           data={this.props.moviesData}
           renderItem={({item}) => {
             return (
@@ -89,27 +106,138 @@ class Home2 extends React.Component {
        
 
         <View style={style.innerFirstSection}>
-          <Text style={{color:"#919294"}}>MOVIES</Text>
+          <Text style={{color:"#919294",fontSize:16}}>MOVIES</Text>
 
           <TouchableOpacity>
-            <Text>Show All</Text>
+            <Text style={{color:"#e4264e",fontSize:16,fontWeight:"600"}}>Show All</Text>
           </TouchableOpacity>
         </View>
+
+          <View>
+        <FlatList
+          style={{marginBottom: 10, backgroundColor: '#181f29'}}
+          horizontal={true}
+
+          data={this.props.moviesData}
+          renderItem={({item}) => {
+            return (
+              <View style={{marginHorizontal:10,width:140}}>
+              <TouchableOpacity>
+                <Image
+                  source={{
+                    uri: 'https://image.tmdb.org/t/p/w500' + item.backdrop_path,
+                  }}
+                  style={style.imageStart2}
+                />
+              </TouchableOpacity>
+
+              <View style={{flexDirection:"row",justifyContent:"space-between"}}>
+                <View style={{flex:0.8}}>
+
+              <Text style={{
+                color:"#919294",
+                fontSize:16,
+                fontWeight:"600",
+                 marginVertical:10,
+                 alignSelf:"center"
+                 }}>{item.original_title}</Text>
+              </View>
+              <View style={{flex:0.2,marginHorizontal:5,marginVertical:8}}>
+              <Image source={this.state.ratings} 
+                      style={{
+                        height:20,
+                        alignSelf:"center",
+                        width:20,
+                     
+                        resizeMode:"contain"}} />
+               <Text style={{
+                color:"#919294",
+                fontSize:16,
+                fontWeight:"600",
+                 marginVertical:5,
+                 alignSelf:"center"
+                 }}>{item.vote_average}</Text>
+
+              </View>
+              
+              </View>
+              <View style={{justifyContent:"flex-end"}}>
+              <Text style={{
+                color:"#919294",
+                fontSize:10,
+                fontWeight:"600",
+                 marginVertical:5,
+                  marginLeft:10,
+                 }}>Action and Adventure</Text>
+                 </View>
+              </View>
+            );
+          }}
+        />
+        </View>
+
+        <View style={style.innerFirstSection}>
+          <Text style={{color:"#919294",fontSize:16}}>LIVE CHANNELS</Text>
+
+          <TouchableOpacity>
+            <Text style={{color:"#e4264e",fontSize:16,fontWeight:"600"}}>Show All</Text>
+          </TouchableOpacity>
+        </View>
+        <View>
+        <FlatList
+          style={{marginBottom: 10, backgroundColor: '#181f29'}}
+          horizontal={true}
+
+          data={this.props.liveData}
+          renderItem={({item}) => {
+            return (
+              <TouchableOpacity>
+                <Image
+                  source={{
+                    uri:  item.url,
+                  }}
+                  style={style.imageStart3}
+                />
+              </TouchableOpacity>
+            );
+          }}
+        />
+        </View>
+
+        </ScrollView>
+
       </SafeAreaView>
     );
   }
 }
 const style = StyleSheet.create({
   imageStart: {
-    height: 220,
+    height: 240,
     width: 350,
-    resizeMode: 'stretch',
+    resizeMode:"stretch",
     marginLeft: 15,
-    marginVertical: 20,
+    marginVertical: 0,
     borderRadius: 10,
-    shadowOffset: {width: 1, height: 1},
-    shadowColor: 'black',
-    shadowOpacity: 1.0,
+   
+  },
+  imageStart3: {
+    height: 100,
+    width: 100,
+    resizeMode:"stretch",
+    marginLeft: 15,
+    marginVertical: 0,
+    borderRadius: 50,
+   
+  },
+  imageStart2:{
+    height: 140,
+    width: 140,
+    resizeMode:"stretch",
+    
+    
+    borderRadius: 10,
+    
+   
   },
   innerFirstSection: {
     
@@ -123,10 +251,12 @@ const style = StyleSheet.create({
 
 const mapStateToProps = state => ({
   moviesData: state.data_Reducer.storedData,
+  liveData: state.data_Reducer.liveData
 });
 
 const mapDispatchToProps = {
   fetchMovieData: dataFetch,
+  fetchLiveData: fetchLiveChannels
 };
 export default connect(
   mapStateToProps,
