@@ -12,46 +12,66 @@ import {
 import {connect} from 'react-redux';
 const Realm = require('realm');
 
-
-import {isUserAuthenticated} from '../../Services/Authentication/action'
+import {isUserAuthenticated} from '../../Services/Authentication/action';
 import ActivityWaiter from '../../activityWaiter';
-
 
 class Login extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      username:"",
-      password:"",
+      username: '',
+      password: '',
       realm: null,
-      usernameImage:require('../../assets/username.png'),
-      passwordImage:require('../../assets/password.png'),
-      logoPath:require('../../assets/logo.png'),
-
+      usernameImage: require('../../assets/username.png'),
+      passwordImage: require('../../assets/password.png'),
+      logoPath: require('../../assets/logo.png'),
+      isLoading: false,
     };
-   
-    
   }
+  signInHandler() {
+    const {realm,username,password}=this.state
+    if (!this.state.username || !this.state.password) {
+      this.setState({isLoading: false});
+      alert('Please fill the details');
+    } else {
+      this.props
+        .authenticateUser(realm.objects('credentialsData'), username, password)
+        .then(
+          resolve => {
+            if (resolve == 'Success') {
+              this.props.navigation.navigate('MyDrawer');
+            }
+          },
+          reject => {
+            if (reject === 'Fail') {
+              alert('Invalid Credentials');
+              this.setState({isLoading: false});
+            } else {
+              alert('Server Error');
+              this.setState({isLoading: false});
+            }
+          },
+        );
+    }
+  }
+
  
-  componentDidUpdate() {
-   
-  }
-  saveData() {
+  saveUserData() {
     const {realm} = this.state;
     realm.write(() => {
-      realm.create('UserData', {username: 'Admin', password: 'Admin'});
+      realm.create('credentialsData', {username: 'Admin', password: 'Admin'});
     });
   }
 
-  deleteData() {
+  deleteUserData() {
     const {realm} = this.state;
     realm.write(() => {
-      let user = realm.objects('UserData');
-      realm.delete(user);
+      let userdata = realm.objects('credentialsData');
+      realm.delete(userdata);
     });
   }
 
-  componentDidMount(){
+  componentDidMount() {
     Realm.open({
       schema: [
         {
@@ -61,153 +81,128 @@ class Login extends React.Component {
       ],
     }).then(realm => {
       this.setState({realm});
-      this.deleteData();
-      this.saveData();
+      this.deleteUserData();
+      this.saveUserData();
     });
-
   }
   componentWillUnmount() {
-    const {realm} = this.state;
-    if (realm !== null && !realm.isClosed) {
-      realm.close();
+    
+    if (this.state.realm !== null && !this.state.realm.isClosed) {
+      this.state.realm.close();
     }
   }
 
-  
   render() {
-    const {isLoading,realm} = this.state;
+    const {isLoading, realm} = this.state;
     console.log('Global States', this.props);
 
     return isLoading ? (
       <ActivityWaiter />
     ) : (
       <View style={style.container}>
-        
-          <View style={style.parentView}>
-          
-            <View style={style.midSection}>
+        <View style={style.parentView}>
+          <View style={style.midSection}>
+            <View
+              style={{
+                flex: 2,
+                justifyContent: 'flex-end',
+                alignItems: 'center',
+              }}>
+              <Image
+                source={this.state.logoPath}
+                style={{height: 140, width: 100, marginBottom: 22}}
+              />
+            </View>
 
-              <View style={{flex:2,justifyContent:"flex-end",alignItems:"center"}}>
-                <Image source={this.state.logoPath} 
-                        style={{height:140,width:100,marginBottom:22}}></Image>
-
-              </View>
-
-              <View style={{ marginVertical:20,flex:1}}>
-
+            <View style={{marginVertical: 20, flex: 1}}>
               <View style={style.SignUpLogin}>
-
-
-                <View style={{...style.container,alignItems:"flex-end",}}>
-                    <Text style={style.loginText}> Login</Text>
+                <View style={{...style.container, alignItems: 'flex-end'}}>
+                  <Text style={style.loginText}> Login</Text>
                 </View>
-
 
                 <View style={{...style.container}}>
                   <Text style={style.signUpText}> Sign Up</Text>
-                  </View>
-
-
-              </View>
-              <Text style={style.loginInfo}>Please login to access your account</Text>
-
-               
-              </View>
-
-
-
-              
-            </View>
-
-
-
-            <View style={style.bottomSection}>
-            <View style={style.divider}>
-            <Image source={this.state.usernameImage} style={style.image}/>
-                <TextInput
-                  style={style.inputDetails}
-                  placeholder={'User Name'}
-                  placeholderTextColor="#919294"
-                  autoCapitalize={false}
-                  blurOnSubmit={true}
-                  defaultValue={this.state.username}
-                  onChangeText={text => {
-                    this.setState({username: text});
-                  }}
-                />
-              </View>
-              <View style={{...style.divider}}>
-                <Image source={this.state.passwordImage} style={style.image}/>
-                <TextInput
-                  style={style.inputDetails}
-                  placeholder={'Password'}
-                  placeholderTextColor="#919294"
-                  
-                  secureTextEntry={true}
-                  autoCapitalize={false}
-                  onChangeText={text => {
-                    this.setState({password: text});
-                  }}
-                />
-              </View>
-
-
-              <TouchableOpacity onPress={()=>{
-                // this.props.navigation.navigate("MyDrawer")
-                this.props.authenticateUser(
-                  realm.objects('UserData'),
-                  username,
-                  password,
-                );
-              }}>
-                <View style={style.loginButton}>
-                  <Text style={style.loginText2}>Login</Text>
                 </View>
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Text style={style.forgotPassword}>Forgot Password?</Text>
-              </TouchableOpacity>
-
-             
+              </View>
+              <Text style={style.loginInfo}>
+                Please login to access your account
+              </Text>
             </View>
           </View>
-       
+
+          <View style={style.bottomSection}>
+            <View style={style.divider}>
+              <Image source={this.state.usernameImage} style={style.image} />
+              <TextInput
+                style={style.inputDetails}
+                placeholder={'User Name'}
+                placeholderTextColor="#919294"
+                autoCapitalize={false}
+                blurOnSubmit={true}
+                defaultValue={this.state.username}
+                onChangeText={text => {
+                  this.setState({username: text});
+                }}
+              />
+            </View>
+            <View style={{...style.divider}}>
+              <Image source={this.state.passwordImage} style={style.image} />
+              <TextInput
+                style={style.inputDetails}
+                placeholder={'Password'}
+                placeholderTextColor="#919294"
+                secureTextEntry={true}
+                autoCapitalize={false}
+                onChangeText={text => {
+                  this.setState({password: text});
+                }}
+              />
+            </View>
+
+            <TouchableOpacity
+              onPress={() => {
+                this.signInHandler();
+                // this.props.navigation.navigate("MyDrawer")
+              }}>
+              <View style={style.loginButton}>
+                <Text style={style.loginText2}>Login</Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Text style={style.forgotPassword}>Forgot Password?</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
       </View>
     );
   }
 }
 const style = StyleSheet.create({
   image: {
-    
     resizeMode: 'contain',
-    alignSelf:"center",
-    height:28,
-    width:28,
-    flex:1,
-    margin:6
+    alignSelf: 'center',
+    height: 28,
+    width: 28,
+    flex: 1,
+    margin: 6,
   },
-  loginInfo:{
-    fontSize:20,
-    color:"#919294",
-    alignSelf:"center",
-    marginVertical:15
-
+  loginInfo: {
+    fontSize: 20,
+    color: '#919294',
+    alignSelf: 'center',
+    marginVertical: 15,
   },
   container: {
     flex: 1,
-    
-    
   },
   SignUpLogin: {
-   flexDirection:"row",
-  
-
+    flexDirection: 'row',
   },
-  loginText2:{
-    color:"white",
-    alignSelf:"center",
-    fontSize:26,
-    paddingVertical:12
+  loginText2: {
+    color: 'white',
+    alignSelf: 'center',
+    fontSize: 26,
+    paddingVertical: 12,
   },
   forgotPassword: {
     alignSelf: 'center',
@@ -221,32 +216,30 @@ const style = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
-  divider: { flexDirection:"row"},
+  divider: {flexDirection: 'row'},
 
   inputDetails: {
-    backgroundColor:"#181f29",
+    backgroundColor: '#181f29',
     paddingVertical: 18,
-    paddingLeft:10,
+    paddingLeft: 10,
     fontSize: 20,
-    flex:7,
-    
+    flex: 7,
+
     marginRight: 15,
-  
+
     fontWeight: '400',
-    marginVertical:20,
-    color:"#919294"
-    
-    
+    marginVertical: 20,
+    color: '#919294',
   },
   signUpText: {
-  
     color: '#fff',
     fontSize: 26,
     paddingVertical: 11,
-    marginLeft:22,
+    marginLeft: 22,
   },
   midSection: {
-    flex: 0.9, backgroundColor:"#181f29"
+    flex: 0.9,
+    backgroundColor: '#181f29',
   },
   newUserSignUp: {
     marginVertical: 10,
@@ -256,26 +249,19 @@ const style = StyleSheet.create({
     marginHorizontal: 15,
   },
   parentView: {
-   
     flex: 1,
-   
   },
   bottomSection: {
     flex: 1,
-    backgroundColor:"#181f29"
+    backgroundColor: '#181f29',
   },
   loginText: {
-    
-
-
-    marginRight:22,
+    marginRight: 22,
     color: '#e4264e',
-    fontWeight:"800",
+    fontWeight: '800',
     fontSize: 30,
-    
-    paddingVertical: 11,
-    
 
+    paddingVertical: 11,
   },
 
   loginButton: {
@@ -283,21 +269,15 @@ const style = StyleSheet.create({
     backgroundColor: '#e4264e',
     justifyContent: 'center',
     alignItems: 'center',
-    marginVertical:15,
-    marginHorizontal:15
-
+    marginVertical: 15,
+    marginHorizontal: 15,
   },
-  
 });
 
-const mapStateToProps = state => ({
-  
-});
+const mapStateToProps = state => ({});
 
 const mapDispatchToProps = {
   authenticateUser: isUserAuthenticated,
-
- 
 };
 export default connect(
   mapStateToProps,
