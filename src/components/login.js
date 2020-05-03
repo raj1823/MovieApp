@@ -25,13 +25,13 @@ class Login extends React.Component {
       usernameImage: require('../../assets/username.png'),
       passwordImage: require('../../assets/password.png'),
       logoPath: require('../../assets/logo.png'),
-      isLoading: false,
+     
     };
   }
   signInHandler() {
     const {realm,username,password}=this.state
     if (!this.state.username || !this.state.password) {
-      this.setState({isLoading: false});
+     
       alert('Please fill the details');
     } else {
       this.props
@@ -39,16 +39,17 @@ class Login extends React.Component {
         .then(
           resolve => {
             if (resolve == 'Success') {
+
               this.props.navigation.navigate('MyDrawer');
             }
           },
           reject => {
             if (reject === 'Fail') {
               alert('Invalid Credentials');
-              this.setState({isLoading: false});
+              
             } else {
               alert('Server Error');
-              this.setState({isLoading: false});
+              
             }
           },
         );
@@ -93,12 +94,10 @@ class Login extends React.Component {
   }
 
   render() {
-    const {isLoading, realm} = this.state;
+    const { realm} = this.state;
     console.log('Global States', this.props);
 
-    return isLoading ? (
-      <ActivityWaiter />
-    ) : (
+    return (
       <View style={style.container}>
         <View style={style.parentView}>
           <View style={style.midSection}>

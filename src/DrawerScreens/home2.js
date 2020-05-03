@@ -26,16 +26,43 @@ class Home2 extends React.Component {
      drawerImage:require('../../assets/drawer.png'),
      searchIcon:require('../../assets/search.png'),
      notificationIcon:require('../../assets/notification.png'),
-     ratings:require('../../assets/ratings.png')
+     ratings:require('../../assets/ratings.png'),
+     isLoading:true,
+     
     };
   }
 
-  componentDidUpdate() {}
+  componentDidUpdate() {
+    console.log("update called")
+    const {moviesData,liveData,categoryData}=this.props
+    if(this.state.isLoading){
+    if(moviesData && liveData && categoryData) this.setState({isLoading:false})
+    }
+  }
+
+ isDataLoaded()
+ {
+     
+ }
   componentDidMount() {
+    
     console.log('Inside mount');
     this.props.fetchMovieData();
     this.props.fetchLiveData();
     this.props.fetchCategories();
+
+    
+    
+  }
+  static getDerivedStateFromProps(props,state)
+  {
+    console.log("derived called",state)
+
+
+      
+  }
+  showMovieDetails(movie){
+    this.props.navigation.navigate("MovieDetail",{detail:movie})
   }
 
   render() {
@@ -46,6 +73,7 @@ class Home2 extends React.Component {
     console.log("live Data:",this.props.liveData)
     console.log("Category Data:",this.props.categoryData)
     return (
+      this.state.isLoading? <ActivityWaiter/>:
       <SafeAreaView style={{backgroundColor:"#181f29",flex:1}}>
        
 
@@ -93,7 +121,10 @@ class Home2 extends React.Component {
           data={this.props.moviesData}
           renderItem={({item}) => {
             return (
-              <TouchableOpacity>
+              <TouchableOpacity onPress={()=>{
+
+                this.showMovieDetails(item)
+              }}>
                 <Image
                   source={{
                     uri: 'https://image.tmdb.org/t/p/w500' + item.backdrop_path,
@@ -221,7 +252,7 @@ class Home2 extends React.Component {
           data={this.props.moviesData}
           renderItem={({item}) => {
             return (
-              <View style={{marginHorizontal:10,width:140}}>
+              <View style={{marginHorizontal:10}}>
               <TouchableOpacity>
                 <Image
                   source={{

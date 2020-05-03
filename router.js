@@ -10,6 +10,7 @@ import Sports from './src/DrawerScreens/sports'
 import LiveTv from './src/DrawerScreens/liveTv'
 import Movies from './src/DrawerScreens/movies'
 import Kids from './src/DrawerScreens/kids'
+import MovieDetails from './src/components/movieDetail'
 
 import { NavigationContainer } from '@react-navigation/native';
 import TvShows from './src/DrawerScreens/tvShows';
@@ -22,7 +23,7 @@ const Stack= createStackNavigator();
 function myDrawer()
 {  return(
     <Drawer.Navigator>
-        <Drawer.Screen name="Home" component={Home2}/>
+        <Drawer.Screen name="Home" component={Home2}  />
 
         <Drawer.Screen name="LiveTv" component={LiveTv}/>
         
@@ -47,6 +48,7 @@ return(
     <Stack.Navigator>
     <Stack.Screen  options={{headerShown:false}} name="Login" component={Login}/>
     <Stack.Screen  options={{headerShown:false}} name="MyDrawer" component ={myDrawer} />
+    <Stack.Screen  options={{headerShown:false}} name="MovieDetail" component={MovieDetails}/>
    
     </Stack.Navigator>
     

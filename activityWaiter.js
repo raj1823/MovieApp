@@ -19,7 +19,7 @@ class ActivityWaiter extends React.Component {
       <Modal transparent={true} animationType={'fade'} visible={true}>
           <View style={style.modalBackground}>
     <View style={style.activityIndicatorWrapper}>
-        <SkypeIndicator color="#e06e26" size={50} />
+        <SkypeIndicator color="#e4264e" size={50} />
         </View>
         </View>
       </Modal>
@@ -32,10 +32,10 @@ const style = StyleSheet.create({
         alignItems: 'center',
         flexDirection: 'column',
         justifyContent: 'space-around',
-        backgroundColor: '#00000040'
+        backgroundColor: '#181f29'
       },
       activityIndicatorWrapper: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: '#181f29',
         height: 100,
         padding:20,
         width: 100,
